@@ -2,7 +2,40 @@
 
 A full-stack web application for managing a dance school, covering students, teachers, schedules, events, coaching sessions, and notifications.
 
+<!-- TODO: add live demo link once deployed on Render
+**Live demo:** https://... — log in with one of the [demo accounts](#demo-accounts). Hosted on a free tier, so the first load may take up to a minute.
+-->
+
 ---
+## Team
+
+Academic project developed by a team of 5 Computer Systems Engineering students at IPCA.
+Original repository: [rogerio-picas/entartes-web-app](https://github.com/rogerio-picas/entartes-web-app)
+
+| Name              | GitHub                                                   |
+| ----------------- | ---------------------------------------------------------|
+| Rogério Picas     | [@rogerio-picas](https://github.com/rogerio-picas)       |
+| Ivo Fernandes     | [@ivofernandes8819](https://github.com/ivofernandes8819) |
+| Matheus Delgado   | [@matheusrdelgado](https://github.com/matheusrdelgado)   |
+| José Sousa        | [@JoseSousa31552](https://github.com/JoseSousa31552)     |
+| Hugo Gomes        | [@hugo31545](https://github.com/hugo31545)               |
+
+## Contributions — Hugo Gomes (full-stack)
+
+This section covers my own contributions only; see the commit history for the work of the whole team.
+
+**Frontend (React)**
+- Role-based dashboards (student, teacher, coordinator), schedule calendar and class management
+- Event management: creation, editing, search, pagination, groups and participants per dance style
+
+**Backend (Node.js / Express / Prisma)**
+- User profile and personal data services with password validation
+- Server-side pagination for events and CSV report export fixes
+- Database schema updates and refactoring of controllers into services
+
+**Testing and quality**
+- Unit and integration tests with Jest and Vitest
+- Date and timezone handling fixes
 
 ## Technologies
 
@@ -31,7 +64,7 @@ Route → Middleware (auth/role) → Controller → Service → Prisma → Respo
 ### Frontend
 
 ```
-View → Service file → services/api.js (injeta JWT) → Backend API
+View → Service file → services/api.js (injects JWT) → Backend API
 ```
 
 - `services/api.js` acts as the central HTTP client — it automatically injects the Bearer token into all requests and redirects the user to the login page upon encountering a 401 status code.
@@ -215,37 +248,54 @@ Roles: **C** = Coordinator · **D** = Teacher (Docente) · **A** = Student (Alun
 ### Prerequisites
 
 - Node.js v20+
+- A PostgreSQL database — a free [Neon](https://neon.tech) project works out of the box
 
-### Backend Environment (`backend/`)
+### 1. Backend (`backend/`)
 
 Create a `backend/.env` file:
 
 ```env
-DATABASE_URL='postgresql://...'
-JWT_SECRET="..."
+DATABASE_URL='postgresql://user:password@host/dbname?sslmode=require'
+JWT_SECRET="any-long-random-string"
 ```
+
+Then install dependencies, create the tables and load the demo data:
 
 ```bash
 npm install
-npx prisma generate
-npm run dev       # http://localhost:3000
+npx prisma db push    # creates the database tables from schema.prisma
+npx prisma db seed    # creates the demo accounts and sample data
+npm run dev           # http://localhost:3000 (API docs at /api-docs)
 ```
 
-### Frontend (`frontend/`)
+The seed is idempotent — running it again resets the demo account passwords without duplicating data.
+
+### 2. Frontend (`frontend/`)
 
 ```bash
 npm install
-npm run dev       # http://localhost:5173
+npm run dev           # http://localhost:5173
 ```
 
-O frontend faz proxy de `/api` para `http://localhost:3000` via Vite — ambos os servidores têm de estar a correr em simultâneo.
+The Vite dev server proxies `/api` to `http://localhost:3000`, so both servers must be running at the same time.
+
+### Production build (single server)
+
+From the repository root, the backend serves the compiled frontend, so the whole app runs as one process:
+
+```bash
+npm run build
+npm start             # http://localhost:3000
+```
 
 ---
 
-## Contas de Desenvolvimento
+## Demo Accounts
 
-| Role         | Username |           Password           |
-| ------------ | -------- | ---------------------------- |
-| Coordenadora | admin    |    admin123456789LOCKONE@    |
-| Docente      | docente  |   docente123456789LOCKONE@   |
-| Aluno        | aluno    |        alunoalunoaluno       |
+Created by the seed script (`backend/prisma/seed.js`):
+
+| Role         | Username  | Password     |
+| ------------ | --------- | ------------ |
+| Coordinator  | `admin`   | `admin123`   |
+| Teacher      | `docente` | `docente123` |
+| Student      | `aluno`   | `aluno123`   |
