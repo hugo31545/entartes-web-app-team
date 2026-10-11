@@ -2,9 +2,7 @@
 
 A full-stack web application for managing a dance school, covering students, teachers, schedules, events, coaching sessions, and notifications.
 
-<!-- TODO: add live demo link once deployed on Render
-**Live demo:** https://... — log in with one of the [demo accounts](#demo-accounts). Hosted on a free tier, so the first load may take up to a minute.
--->
+**Live demo:** https://entartes-mhno.onrender.com — log in with one of the [demo accounts](#demo-accounts). Hosted on a free tier, so the first load may take up to a minute.
 
 ---
 ## Team
